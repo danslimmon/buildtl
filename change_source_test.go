@@ -11,7 +11,7 @@ import (
 )
 
 // Channel returned by singleDirChangeSource should get message when a new file is created
-func TestFSChangeSource_FileCreate(t *testing.T) {
+func TestSingleDirChangeSource_FileCreate(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
 
@@ -55,7 +55,7 @@ func TestFSChangeSource_FileCreate(t *testing.T) {
 }
 
 // Channel returned by singleDirChangeSource should get message when a file is modified
-func TestFSChangeSource_FileModify(t *testing.T) {
+func TestSingleDirChangeSource_FileModify(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
 
@@ -103,7 +103,7 @@ func TestFSChangeSource_FileModify(t *testing.T) {
 }
 
 // Channel returned by singleDirChangeSource should get message when a file is removed
-func TestFSChangeSource_FileRemove(t *testing.T) {
+func TestSingleDirChangeSource_FileRemove(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
 
@@ -152,7 +152,7 @@ func TestFSChangeSource_FileRemove(t *testing.T) {
 }
 
 // Channel returned by singleDirChangeSource should not get message when nothing happens
-func TestFSChangeSource_NoChange(t *testing.T) {
+func TestSingleDirChangeSource_NoChange(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
 

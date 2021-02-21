@@ -20,6 +20,14 @@ func fsChangeSource(dir string, done <-chan struct{}) (chan struct{}, error) {
 
 // singleDirChangeSource returns a channel that will receive an empty struct on filesystem changes
 // within a given directory.
+//
+// dir is the directory in which to look (recursively, ignoring symlinks). done is a channel that
+// should be closed when the change source is no longer being read from.
+//
+// This function returns a channel on which empty structs will be sent whenever there's a filesystem
+// change in dir. An error is returned if there's a problem initializing the filesystem watcher. If
+// the filesystem watcher closes its channel(s), the channel returned by fsChangeSource will be
+// closed.
 func singleDirChangeSource(dir string, done <-chan struct{}) (chan struct{}, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
