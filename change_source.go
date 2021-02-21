@@ -13,7 +13,7 @@ import (
 // This function returns a channel on which empty structs will be sent whenever there's a filesystem
 // change in dir. An error is returned if there's a problem initializing the filesystem watcher. If
 // the filesystem watcher closes its channel(s), the channel returned by fsChangeSource will be
-// closed. If the filesystem watcher reports an error, the error will be logged and discarded.
+// closed.
 func fsChangeSource(dir string, done <-chan struct{}) (chan struct{}, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -38,6 +38,7 @@ func fsChangeSource(dir string, done <-chan struct{}) (chan struct{}, error) {
 				}
 				out <- struct{}{}
 			case err, ok := <-watcher.Errors:
+				// Errors on this channel can be file removals, so treat them like any other event.
 				if !ok {
 					close(out)
 					return

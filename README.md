@@ -7,8 +7,7 @@ the status of build and test steps.
 
 # work
 
-- test fsChangeSource on file content change
+- test fsChangeSource on lack of change
 
-- test fsChangeSource on file removal
 - test fsChangeSource recursion
 - test fsChangeSource symlink behavior
