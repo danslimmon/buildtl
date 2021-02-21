@@ -7,7 +7,6 @@ the status of build and test steps.
 
 # work
 
-- test fsChangeSource on lack of change
-
 - test fsChangeSource recursion
+
 - test fsChangeSource symlink behavior

@@ -150,3 +150,48 @@ func TestFSChangeSource_FileRemove(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+// Channel returned by fsChangeSource should not get message when nothing happens
+func TestFSChangeSource_NoChange(t *testing.T) {
+	t.Parallel()
+	assert := assert.New(t)
+
+	done := make(chan struct{})
+	defer close(done)
+
+	// Make temp directory to work in
+	tmpDir, err := ioutil.TempDir("", "timeline_test_*")
+	defer os.RemoveAll(tmpDir)
+	assert.Nil(err)
+
+	// Create a file, which we'll modify later to trigger a change signal.
+	path := filepath.Join(tmpDir, "foo")
+	f, err := os.Create(path)
+	defer f.Close()
+	assert.Nil(err)
+
+	// Start the goroutine that will listen for change events.
+	src, err := fsChangeSource(tmpDir, done)
+	assert.Nil(err)
+	received := make(chan struct{})
+	go func(received chan struct{}, done chan struct{}) {
+		select {
+		case <-src:
+			close(received)
+			return
+		case <-done:
+			return
+		}
+	}(received, done)
+
+	// Wait for change event up to timeout.
+	timeout := 100 * time.Millisecond
+	select {
+	case <-received:
+		t.Logf("src received message even though nothing happened")
+		t.FailNow()
+	case <-time.After(timeout):
+		// No signal received. Test passes.
+		return
+	}
+}
