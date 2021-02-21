@@ -15,6 +15,12 @@ import (
 // the filesystem watcher closes its channel(s), the channel returned by fsChangeSource will be
 // closed.
 func fsChangeSource(dir string, done <-chan struct{}) (chan struct{}, error) {
+	return nil, nil
+}
+
+// singleDirChangeSource returns a channel that will receive an empty struct on filesystem changes
+// within a given directory.
+func singleDirChangeSource(dir string, done <-chan struct{}) (chan struct{}, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return nil, err

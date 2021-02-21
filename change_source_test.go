@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Channel returned by fsChangeSource should get message when a new file is created
+// Channel returned by singleDirChangeSource should get message when a new file is created
 func TestFSChangeSource_FileCreate(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
@@ -24,7 +24,7 @@ func TestFSChangeSource_FileCreate(t *testing.T) {
 	assert.Nil(err)
 
 	// Start the goroutine that will listen for change events.
-	src, err := fsChangeSource(tmpDir, done)
+	src, err := singleDirChangeSource(tmpDir, done)
 	assert.Nil(err)
 	received := make(chan struct{})
 	go func(received chan struct{}, done chan struct{}) {
@@ -54,7 +54,7 @@ func TestFSChangeSource_FileCreate(t *testing.T) {
 	}
 }
 
-// Channel returned by fsChangeSource should get message when a file is modified
+// Channel returned by singleDirChangeSource should get message when a file is modified
 func TestFSChangeSource_FileModify(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
@@ -73,7 +73,7 @@ func TestFSChangeSource_FileModify(t *testing.T) {
 	assert.Nil(err)
 
 	// Start the goroutine that will listen for change events.
-	src, err := fsChangeSource(tmpDir, done)
+	src, err := singleDirChangeSource(tmpDir, done)
 	assert.Nil(err)
 	received := make(chan struct{})
 	go func(received chan struct{}, done chan struct{}) {
@@ -102,7 +102,7 @@ func TestFSChangeSource_FileModify(t *testing.T) {
 	}
 }
 
-// Channel returned by fsChangeSource should get message when a file is removed
+// Channel returned by singleDirChangeSource should get message when a file is removed
 func TestFSChangeSource_FileRemove(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
@@ -122,7 +122,7 @@ func TestFSChangeSource_FileRemove(t *testing.T) {
 	assert.Nil(err)
 
 	// Start the goroutine that will listen for change events.
-	src, err := fsChangeSource(tmpDir, done)
+	src, err := singleDirChangeSource(tmpDir, done)
 	assert.Nil(err)
 	received := make(chan struct{})
 	go func(received chan struct{}, done chan struct{}) {
@@ -151,7 +151,7 @@ func TestFSChangeSource_FileRemove(t *testing.T) {
 	}
 }
 
-// Channel returned by fsChangeSource should not get message when nothing happens
+// Channel returned by singleDirChangeSource should not get message when nothing happens
 func TestFSChangeSource_NoChange(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
@@ -171,7 +171,7 @@ func TestFSChangeSource_NoChange(t *testing.T) {
 	assert.Nil(err)
 
 	// Start the goroutine that will listen for change events.
-	src, err := fsChangeSource(tmpDir, done)
+	src, err := singleDirChangeSource(tmpDir, done)
 	assert.Nil(err)
 	received := make(chan struct{})
 	go func(received chan struct{}, done chan struct{}) {
