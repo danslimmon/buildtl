@@ -1,22 +1,10 @@
-# runningtl
+# buildtl
 
-`runningtl` is a "running timeline" with an ncurses-based visualization system.
+`buildtl` is a running timeline of the build and test status of your code. You run it in a
+one-row-high terminal and it produces output like this:
 
-You make one like this:
+    ---ffffxxxxxxxxxxxxxxxxxxxxxxxfff-------------------------------fffffffffff-----------
 
-    tl := runningtl.New()
-
-You update it like this:
-
-    tl.Update(func(state map[string]interface{}) error {
-      state["weather"] = getWeather()
-      return nil
-    })
-
-At any given time, the timeline has a **current state**. When you call `Update`, it modifies the
-current state. Then, when you call `tl.Tick()`, the current state gets replaced by a new current
-state. If the number of states in the timeline is then greater than the timeline's length, the
-oldest state is deleted.
-
-Whenever the data in the timeline changes, the channel returned by `tl.Updated` will receive the new
-state as a `[]map[string]interface{}`.
+It updates every 10 seconds, adding a new character at the right hand side to indicate the current
+state. `x` means `go build` is failing, `f` means `go test ./...` is failing, and `-` means
+everything's okay.

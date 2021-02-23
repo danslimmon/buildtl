@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os/exec"
 	"time"
+
+	tm "github.com/buger/goterm"
 )
 
 func printStates(states []map[string]interface{}) {
@@ -29,10 +31,30 @@ func printStates(states []map[string]interface{}) {
 		if buildStatus {
 			out[i] = '-'
 		} else {
-			out[i] = 'X'
+			out[i] = 'x'
+			continue
+		}
+
+		testStatusIface, ok := state["test"]
+		if !ok {
+			out[i] = ' '
+			continue
+		}
+
+		testStatus, ok := testStatusIface.(bool)
+		if !ok {
+			out[i] = 'e'
+			continue
+		}
+
+		if testStatus {
+			out[i] = '-'
+		} else {
+			out[i] = 'f'
+			continue
 		}
 	}
-	fmt.Printf("%s\n", string(out))
+	fmt.Printf("\n%s", string(out))
 }
 
 func build() bool {
@@ -41,9 +63,19 @@ func build() bool {
 	return (err == nil)
 }
 
+func test() bool {
+	cmd := exec.Command("go", "test", "./...")
+	err := cmd.Run()
+	return (err == nil)
+}
+
+func termWidth() int {
+	return tm.Width()
+}
+
 func main() {
 	ticker := time.Tick(10 * time.Second)
-	tl := NewTimeline(30)
+	tl := NewTimeline(termWidth())
 	go func() {
 		for {
 			states := <-tl.Updated()
@@ -55,6 +87,11 @@ func main() {
 			buildStatus := build()
 			tl.Update(func(state map[string]interface{}) {
 				state["build"] = buildStatus
+			})
+
+			testStatus := test()
+			tl.Update(func(state map[string]interface{}) {
+				state["test"] = testStatus
 			})
 		}()
 		<-ticker
